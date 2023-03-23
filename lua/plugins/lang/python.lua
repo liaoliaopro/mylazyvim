@@ -10,7 +10,9 @@ return {
     opts = function(_, opts)
       local nls = require("null-ls")
       vim.list_extend(opts.sources, {
+        nls.builtins.formatting.ruff,
         nls.builtins.formatting.black,
+        -- nls.builtins.diagnostics.ruff,
       })
     end,
   },
@@ -33,10 +35,23 @@ return {
       },
       setup = {
         pyright = function(_, _)
+          -- FIXME disable pyright hints. Someday when ruff-lsp can do completion
+          -- pyright can be removed.
+          -- client.handlers["textDocument/publishDiagnostics"] = function(...) end
+          local capabilities = vim.lsp.protocol.make_client_capabilities()
+          capabilities.textDocument.publishDiagnostics.tagSupport.valueSet = { 2 }
+          local util = require("lspconfig.util")
+          util.default_config = vim.tbl_extend("force", util.default_config, {
+            capabilities = capabilities,
+          })
+
           local lsp_utils = require("plugins.lsp.utils")
           lsp_utils.on_attach(function(client, buffer)
+
             -- stylua: ignore
             if client.name == "pyright" then
+
+
               vim.keymap.set("n", "<leader>tC", function() require("dap-python").test_class() end, { buffer = buffer, desc = "Debug Class" })
               vim.keymap.set("n", "<leader>tM", function() require("dap-python").test_method() end, { buffer = buffer, desc = "Debug Method" })
               vim.keymap.set("v", "<leader>tS", function() require("dap-python").debug_selection({}) end, { buffer = buffer, desc = "Debug Selection" })
