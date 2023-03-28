@@ -18,7 +18,9 @@ return {
         rust_analyzer = {
           settings = {
             ["rust-analyzer"] = {
-              cargo = { allFeatures = true },
+              imports = { granularity = { group = "module" }, prefix = "self" },
+              cargo = { allFeatures = true, buildScripts = { enable = true } },
+              procMacro = { enable = true },
               checkOnSave = {
                 command = "cargo clippy",
                 extraArgs = { "--no-deps" },
