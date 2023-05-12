@@ -7,6 +7,8 @@ return {
         "python",
         "go",
         "toml",
+        "svelte",
+        "css",
       })
     end,
   },
