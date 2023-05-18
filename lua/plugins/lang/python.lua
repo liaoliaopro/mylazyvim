@@ -10,12 +10,45 @@ return {
     opts = function(_, opts)
       local nls = require("null-ls")
       vim.list_extend(opts.sources, {
-        nls.builtins.formatting.ruff,
+        -- nls.builtins.formatting.ruff,
         nls.builtins.formatting.black,
         -- nls.builtins.diagnostics.ruff,
       })
     end,
   },
+
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        pylsp = {
+          settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = { enabled = false },
+                pyflakes = { enabled = false },
+                flake8 = { enabled = false },
+                autopep8 = { enabled = false },
+                black = { enabled = true },
+                ruff = {
+                  enabled = true,
+                  extendSelect = { "I" },
+                },
+                mypy = {
+                  enabled = true,
+                  live_mode = true,
+                  strict = true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+
+  --[[
+  -- disable pyright
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -24,6 +57,7 @@ return {
           settings = {
             python = {
               analysis = {
+                autoImportCompletions = true,
                 typeCheckingMode = "off",
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
@@ -50,8 +84,6 @@ return {
 
             -- stylua: ignore
             if client.name == "pyright" then
-
-
               vim.keymap.set("n", "<leader>tC", function() require("dap-python").test_class() end, { buffer = buffer, desc = "Debug Class" })
               vim.keymap.set("n", "<leader>tM", function() require("dap-python").test_method() end, { buffer = buffer, desc = "Debug Method" })
               vim.keymap.set("v", "<leader>tS", function() require("dap-python").debug_selection({}) end, { buffer = buffer, desc = "Debug Selection" })
@@ -61,6 +93,7 @@ return {
       },
     },
   },
+  ]]
   {
     "mfussenegger/nvim-dap",
     dependencies = { "mfussenegger/nvim-dap-python" },
