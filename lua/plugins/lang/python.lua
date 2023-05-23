@@ -14,6 +14,9 @@ return {
         nls.builtins.formatting.black,
         -- nls.builtins.diagnostics.ruff,
       })
+      nls.builtins.formatting.black.with({
+        extra_args = { "--line-length=88" },
+      })
     end,
   },
 

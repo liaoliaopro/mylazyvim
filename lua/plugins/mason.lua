@@ -12,6 +12,8 @@ return {
         "python-lsp-server",
         "gopls",
         "rust-analyzer",
+        "prettierd",
+        "marksman",
       },
     },
   },
