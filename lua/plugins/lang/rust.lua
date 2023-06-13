@@ -1,8 +1,3 @@
-local install_root_dir = vim.fn.stdpath("data") .. "/mason"
-local extension_path = install_root_dir .. "/packages/codelldb/extension/"
-local codelldb_path = extension_path .. "adapter/codelldb"
-local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -31,8 +26,7 @@ return {
       },
       setup = {
         rust_analyzer = function(_, opts)
-          local lsp_utils = require("plugins.lsp.utils")
-          lsp_utils.on_attach(function(client, buffer)
+          require("lazyvim.util").on_attach(function(client, buffer)
             -- stylua: ignore
             if client.name == "rust_analyzer" then
               vim.keymap.set("n", "<leader>cR", "<cmd>RustRunnables<cr>", { buffer = buffer, desc = "Runnables" })
@@ -53,9 +47,6 @@ return {
               end,
             },
             server = opts,
-            dap = {
-              adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
-            },
           })
           return true
         end,
@@ -76,38 +67,9 @@ return {
         init = function()
           local crates = require("crates")
 
-          vim.keymap.set(
-            "n",
-            "<leader>cv",
-            crates.show_versions_popup,
-            { desc = "Crate Version(rust)", buffer = bufnr }
-          )
-          vim.keymap.set(
-            "n",
-            "<leader>cf",
-            crates.show_features_popup,
-            { desc = "Crate Features(rust)", buffer = bufnr }
-          )
-          vim.keymap.set(
-            "n",
-            "<leader>cd",
-            crates.show_dependencies_popup,
-            { desc = "Crate Dependencies(rust)", buffer = bufnr }
-          )
-
-          -- vim.keymap.set("n", "<leader>ct", crates.toggle, { desc = "Toggle Crates", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cr", crates.reload, { desc = "Reload Crates", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cu", crates.update_crate, { desc = "Update Crate", buffer = bufnr })
-          -- vim.keymap.set("v", "<leader>cu", crates.update_crates, { desc = "Update Crates", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>ca", crates.update_all_crates, { desc = "Update All Crates", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cU", crates.upgrade_crate, { desc = "Upgrade Crate", buffer = bufnr })
-          -- vim.keymap.set("v", "<leader>cU", crates.upgrade_crates, { desc = "Update Crates", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cA", crates.upgrade_all_crates, { desc = "Update All Crates", buffer = bufnr })
-          --
-          -- vim.keymap.set("n", "<leader>cH", crates.open_homepage, { desc = "Open Homepage", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cR", crates.open_repository, { desc = "Open Repository", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cD", crates.open_documentation, { desc = "Open Documentation", buffer = bufnr })
-          -- vim.keymap.set("n", "<leader>cC", crates.open_crates_io, { desc = "Open crates-io", buffer = bufnr })
+          vim.keymap.set("n", "<leader>cv", crates.show_versions_popup, { desc = "Crate Version(rust)" })
+          vim.keymap.set("n", "<leader>cf", crates.show_features_popup, { desc = "Crate Features(rust)" })
+          vim.keymap.set("n", "<leader>cd", crates.show_dependencies_popup, { desc = "Crate Dependencies(rust)" })
         end,
       },
     },
@@ -118,45 +80,5 @@ return {
         { name = "crates", priority = 750 },
       }))
     end,
-  },
-  {
-    "mfussenegger/nvim-dap",
-    opts = {
-      setup = {
-        codelldb = function()
-          local dap = require("dap")
-          dap.adapters.codelldb = {
-            type = "server",
-            port = "${port}",
-            executable = {
-              command = codelldb_path,
-              args = { "--port", "${port}" },
-
-              -- On windows you may have to uncomment this:
-              -- detached = false,
-            },
-          }
-          dap.configurations.cpp = {
-            {
-              name = "Launch file",
-              type = "codelldb",
-              request = "launch",
-              program = function()
-                return vim.fn.input({
-                  prompt = "Path to executable: ",
-                  default = vim.fn.getcwd() .. "/",
-                  completion = "file",
-                })
-              end,
-              cwd = "${workspaceFolder}",
-              stopOnEntry = false,
-            },
-          }
-
-          dap.configurations.c = dap.configurations.cpp
-          dap.configurations.rust = dap.configurations.cpp
-        end,
-      },
-    },
   },
 }
