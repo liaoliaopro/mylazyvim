@@ -2,6 +2,9 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- disable undofile
+vim.opt.undofile = false
+
 -- set default python
 vim.g.python3_host_prog = "~/.rye/shims/python3"
 vim.g.python_host_prog = "~/.rye/shims/python"
