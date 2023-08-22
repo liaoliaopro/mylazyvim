@@ -2,6 +2,10 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- editor settings
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 0
+
 -- disable undofile
 vim.opt.undofile = false
 
