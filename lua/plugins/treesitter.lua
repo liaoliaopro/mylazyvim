@@ -6,6 +6,8 @@ return {
         "toml",
         "svelte",
         "css",
+        "http",
+        "json",
       })
     end,
   },
