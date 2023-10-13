@@ -6,20 +6,6 @@ return {
     end,
   },
   {
-    "jose-elias-alvarez/null-ls.nvim",
-    opts = function(_, opts)
-      local nls = require("null-ls")
-      vim.list_extend(opts.sources, {
-        -- nls.builtins.formatting.ruff,
-        nls.builtins.formatting.black,
-        -- nls.builtins.diagnostics.ruff,
-      })
-      nls.builtins.formatting.black.with({
-        extra_args = { "--line-length=88" },
-      })
-    end,
-  },
-  {
     "linux-cultist/venv-selector.nvim",
     cmd = "VenvSelect",
     opts = {
